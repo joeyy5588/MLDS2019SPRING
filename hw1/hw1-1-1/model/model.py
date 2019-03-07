@@ -21,9 +21,9 @@ class MnistModel(BaseModel):
         x = self.fc2(x)
         return F.log_softmax(x, dim=1)
 
-class CsvModel(BaseModel):
+class DNN8(BaseModel):
     def __init__(self):
-        super(CsvModel, self).__init__()
+        super(DNN8, self).__init__()
         self.fc1 = nn.Linear(1, 5)
         self.fc2 = nn.Linear(5, 10)
         self.fc3 = nn.Linear(10, 10)
@@ -42,4 +42,31 @@ class CsvModel(BaseModel):
         x = self.fc6(x)
         x = self.fc7(x)
         x = self.fc8(x)
+        return x
+
+class DNN2(BaseModel):
+    def __init__(self):
+        super(DNN2, self).__init__()
+        self.fc1 = nn.Linear(1, 190)
+        self.fc2 = nn.Linear(190, 1)
+
+    def forward(self, x):
+        x = self.fc1(x)
+        x = self.fc2(x)
+        return x
+
+class DNN5(BaseModel):
+    def __init__(self):
+        super(DNN5, self).__init__()
+        self.fc1 = nn.Linear(1, 10)
+        self.fc2 = nn.Linear(10, 20)
+        self.fc3 = nn.Linear(20, 10)
+        self.fc4 = nn.Linear(10, 10)
+        self.fc5 = nn.Linear(10, 1)
+    def forward(self, x):
+        x = self.fc1(x)
+        x = self.fc2(x)
+        x = self.fc3(x)
+        x = self.fc4(x)
+        x = self.fc5(x)
         return x

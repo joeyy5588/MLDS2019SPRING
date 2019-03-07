@@ -39,6 +39,8 @@ class CsvDataset(Dataset):
         # so you can convert numpy ndarray shape to tensor in PyTorch (H, W, C) --> (C, H, W)
         x = self.x_list[index]
         y = self.y_list[index]
+        print(x)
+        print(y)
         x = torch.from_numpy(x).float()
         y = torch.from_numpy(y).float()
         if self.transform is not None:
@@ -53,5 +55,28 @@ class CsvDataLoader(BaseDataLoader):
     def __init__(self, data_dir, batch_size, shuffle, validation_split, num_workers, training=True):
         trsfm = None
         self.data_dir = data_dir
-        self.dataset = CsvDataset(self.data_dir, transform=trsfm)
+        self.dataset = LinearReg()
         super(CsvDataLoader, self).__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
+
+class LinearReg(Dataset):
+
+    def __init__(self, transform=None):
+        self.data = np.random.rand(2, )
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, index):
+        # load image as ndarray type (Height * Width * Channels)
+        # be carefull for converting dtype to np.uint8 [Unsigned integer (0 to 255)]
+        # in this example, i don't use ToTensor() method of torchvision.transforms
+        # so you can convert numpy ndarray shape to tensor in PyTorch (H, W, C) --> (C, H, W)
+        x = np.random.rand(1, )
+        y = np.array(np.sin(5*np.pi*x)/(5*np.pi*x))
+        x = torch.from_numpy(x).float()
+        y = torch.from_numpy(y).float()
+        if self.transform is not None:
+            x = self.transform(x)
+            y = self.transform(y)
+        return x, y
