@@ -24,49 +24,55 @@ class MnistModel(BaseModel):
 class DNN8(BaseModel):
     def __init__(self):
         super(DNN8, self).__init__()
-        self.fc1 = nn.Linear(1, 5)
-        self.fc2 = nn.Linear(5, 10)
-        self.fc3 = nn.Linear(10, 10)
-        self.fc4 = nn.Linear(10, 10)
-        self.fc5 = nn.Linear(10, 10)
-        self.fc6 = nn.Linear(10, 10)
-        self.fc7 = nn.Linear(10, 5)
-        self.fc8 = nn.Linear(5, 1)
+        self.fc = nn.Sequential(
+            nn.Linear(1, 5),
+            nn.ReLU(inplace=True),
+            nn.Linear(5, 10),
+            nn.ReLU(inplace=True),
+            nn.Linear(10, 10),
+            nn.ReLU(inplace=True),
+            nn.Linear(10, 10),
+            nn.ReLU(inplace=True),
+            nn.Linear(10, 10),
+            nn.ReLU(inplace=True),
+            nn.Linear(10, 10),
+            nn.ReLU(inplace=True),
+            nn.Linear(10, 5),
+            nn.ReLU(inplace=True),
+            nn.Linear(5, 1)
+        )
 
     def forward(self, x):
-        x = self.fc1(x)
-        x = self.fc2(x)
-        x = self.fc3(x)
-        x = self.fc4(x)
-        x = self.fc5(x)
-        x = self.fc6(x)
-        x = self.fc7(x)
-        x = self.fc8(x)
-        return x
+        output = self.fc(x)
+        return output
 
 class DNN2(BaseModel):
     def __init__(self):
         super(DNN2, self).__init__()
-        self.fc1 = nn.Linear(1, 190)
-        self.fc2 = nn.Linear(190, 1)
+        self.fc = nn.Sequential(
+            nn.Linear(1, 190),
+            nn.ReLU(inplace=True),
+            nn.Linear(190, 1),
+        )
 
     def forward(self, x):
-        x = self.fc1(x)
-        x = self.fc2(x)
-        return x
+        output = self.fc(x)
+        return output
 
 class DNN5(BaseModel):
     def __init__(self):
         super(DNN5, self).__init__()
-        self.fc1 = nn.Linear(1, 10)
-        self.fc2 = nn.Linear(10, 20)
-        self.fc3 = nn.Linear(20, 10)
-        self.fc4 = nn.Linear(10, 10)
-        self.fc5 = nn.Linear(10, 1)
+        self.fc = nn.Sequential(
+            nn.Linear(1, 10),
+            nn.ReLU(inplace=True),
+            nn.Linear(10, 20),
+            nn.ReLU(inplace=True),
+            nn.Linear(20, 10),
+            nn.ReLU(inplace=True),
+            nn.Linear(10, 10),
+            nn.ReLU(inplace=True),
+            nn.Linear(10, 1),
+        )
     def forward(self, x):
-        x = self.fc1(x)
-        x = self.fc2(x)
-        x = self.fc3(x)
-        x = self.fc4(x)
-        x = self.fc5(x)
-        return x
+        output = self.fc(x)
+        return output

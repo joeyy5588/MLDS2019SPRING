@@ -39,8 +39,6 @@ class CsvDataset(Dataset):
         # so you can convert numpy ndarray shape to tensor in PyTorch (H, W, C) --> (C, H, W)
         x = self.x_list[index]
         y = self.y_list[index]
-        print(x)
-        print(y)
         x = torch.from_numpy(x).float()
         y = torch.from_numpy(y).float()
         if self.transform is not None:
@@ -61,7 +59,7 @@ class CsvDataLoader(BaseDataLoader):
 class LinearReg(Dataset):
 
     def __init__(self, transform=None):
-        self.data = np.random.rand(2, )
+        self.data = np.random.rand(512, )
         self.transform = transform
 
     def __len__(self):
