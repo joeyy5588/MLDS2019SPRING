@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+import os
 from torchvision.utils import make_grid
 from base import BaseTrainer
 
@@ -72,7 +73,8 @@ class Trainer(BaseTrainer):
 
         log = {
             'loss': total_loss / len(self.data_loader),
-            'metrics': (total_metrics / len(self.data_loader)).tolist()
+            'metrics': (total_metrics / len(self.data_loader)).tolist(),
+            'grad_norm': self._calc_gradnorm()
         }
 
         if self.do_validation:
@@ -107,9 +109,17 @@ class Trainer(BaseTrainer):
                 self.writer.add_scalar('loss', loss.item())
                 total_val_loss += loss.item()
                 total_val_metrics += self._eval_metrics(output, target)
-                #self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
-
+              
         return {
             'val_loss': total_val_loss / len(self.valid_data_loader),
             'val_metrics': (total_val_metrics / len(self.valid_data_loader)).tolist()
         }
+    def _calc_gradnorm(self):
+        grad_all = 0
+        for p in self.model.parameters():
+            grad = 0.0
+            if p.grad is not None:
+                grad = (p.grad.cpu().data.numpy() ** 2).sum()
+            grad_all += grad
+        grad_norm = grad_all ** 0.5
+        return grad_norm

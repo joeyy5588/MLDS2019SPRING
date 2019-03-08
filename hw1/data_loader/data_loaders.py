@@ -59,19 +59,15 @@ class CsvDataLoader(BaseDataLoader):
 class LinearReg(Dataset):
 
     def __init__(self, transform=None):
-        self.data = np.random.rand(512, )
+        self.data = np.random.rand(2048, )
         self.transform = transform
 
     def __len__(self):
         return len(self.data)
 
     def __getitem__(self, index):
-        # load image as ndarray type (Height * Width * Channels)
-        # be carefull for converting dtype to np.uint8 [Unsigned integer (0 to 255)]
-        # in this example, i don't use ToTensor() method of torchvision.transforms
-        # so you can convert numpy ndarray shape to tensor in PyTorch (H, W, C) --> (C, H, W)
-        x = np.random.rand(1, )
-        y = np.array(np.sin(5*np.pi*x)/(5*np.pi*x))
+        x = np.array([self.data[index]])
+        y = np.sin(5*np.pi*x)/(5*np.pi*x)
         x = torch.from_numpy(x).float()
         y = torch.from_numpy(y).float()
         if self.transform is not None:

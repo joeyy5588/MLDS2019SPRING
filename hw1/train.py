@@ -32,13 +32,12 @@ def main(config, resume):
     trainable_params = filter(lambda p: p.requires_grad, model.parameters())
     optimizer = get_instance(torch.optim, 'optimizer', config, trainable_params)
     lr_scheduler = get_instance(torch.optim.lr_scheduler, 'lr_scheduler', config, optimizer)
-
     trainer = Trainer(model, loss, metrics, optimizer, 
                       resume=resume,
                       config=config,
                       data_loader=data_loader,
                       valid_data_loader=valid_data_loader,
-                      lr_scheduler=lr_scheduler,
+                      lr_scheduler=None,
                       train_logger=train_logger)
 
     trainer.train()
@@ -51,11 +50,17 @@ if __name__ == '__main__':
                            help='path to latest checkpoint (default: None)')
     parser.add_argument('-d', '--device', default=None, type=str,
                            help='indices of GPUs to enable (default: all)')
+    parser.add_argument('--type', default=None, type=str,
+                           help='model type')
     args = parser.parse_args()
 
     if args.config:
         # load config file
         config = json.load(open(args.config))
+        # use argument to overwrite the original config setting
+        if args.type != None:
+            config['name'] = args.type
+            config['arch']['type'] = args.type
         path = os.path.join(config['trainer']['save_dir'], config['name'])
     elif args.resume:
         # load config file from checkpoint, in case new config file is not given.

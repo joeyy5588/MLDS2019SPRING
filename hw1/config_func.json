@@ -1,18 +1,18 @@
 {
-    "name": "DNN-8",
+    "name": "DNN-2",
     "n_gpu": 1,
     
     "arch": {
-        "type": "DNN8",
+        "type": "DNN-2",
         "args": {}
     },
     "data_loader": {
         "type": "CsvDataLoader",
         "args":{
             "data_dir": "data/",
-            "batch_size": 64,
+            "batch_size": 256,
             "shuffle": true,
-            "validation_split": 0,
+            "validation_split": 0.1,
             "num_workers": 2
         }
     },
@@ -34,15 +34,15 @@
         }
     },
     "trainer": {
-        "epochs": 50,
+        "epochs": 1000,
         "save_dir": "saved/",
         "save_period": 1,
         "verbosity": 2,
         
         "monitor": "min val_loss",
-        "early_stop": 300,
+        "early_stop": 32,
         
-        "tensorboardX": true,
+        "tensorboardX": false,
         "log_dir": "saved/runs"
     }
 }
