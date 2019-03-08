@@ -1,16 +1,16 @@
 {
-    "name": "DNN-2",
+    "name": "DNN2",
     "n_gpu": 1,
     
     "arch": {
-        "type": "DNN-2",
+        "type": "DNN2",
         "args": {}
     },
     "data_loader": {
         "type": "CsvDataLoader",
         "args":{
             "data_dir": "data/",
-            "batch_size": 256,
+            "batch_size": 512,
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 2
@@ -34,13 +34,13 @@
         }
     },
     "trainer": {
-        "epochs": 1000,
+        "epochs": 500,
         "save_dir": "saved/",
         "save_period": 1,
         "verbosity": 2,
         
         "monitor": "min val_loss",
-        "early_stop": 32,
+        "early_stop": 1e10,
         
         "tensorboardX": false,
         "log_dir": "saved/runs"

@@ -48,7 +48,7 @@ class BaseTrainer:
 
         # setup directory for checkpoint saving
         start_time = datetime.datetime.now().strftime('%m%d_%H%M%S')
-        self.checkpoint_dir = os.path.join(cfg_trainer['save_dir'], config['name'], start_time)
+        self.checkpoint_dir = os.path.join(cfg_trainer['save_dir'], config['name'])
         # setup visualization writer instance
         writer_dir = os.path.join(cfg_trainer['log_dir'], config['name'], start_time)
         self.writer = WriterTensorboardX(writer_dir, self.logger, cfg_trainer['tensorboardX'])
@@ -157,10 +157,11 @@ class BaseTrainer:
         }
         filename = os.path.join(self.checkpoint_dir, 'checkpoint-epoch{}.pth'.format(epoch))
         torch.save(state, filename)
-
+        
         """
         keep tracking of the last one
         """
+        
         last_model = os.path.join(self.checkpoint_dir, 'model_last.pth'.format(epoch))
         torch.save(state, last_model)
         

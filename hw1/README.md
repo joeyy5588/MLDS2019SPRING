@@ -21,7 +21,7 @@ python3 train.py --config config_mnist.json --type [CNN1|CNN2|CNN3]
 2. Run ``plot_loss_acc.py`` to visualize the result
 ```
 cd vis/hw1-1
-python3 plot_loss_acc.py (裡面路徑路徑要改一下qq)
+python3 plot_loss_acc.py
 ```
 ## 1-2
 ### 1-2-1: show that different optimization process will converge to the same point
@@ -35,6 +35,21 @@ python3 train.py --config config_mnist.json --type [CNN1|CNN2|CNN3]
 2. Run ``plot_optim_process.py`` to visualize the result
 ```
 cd vis/hw1-2
-python3 plot_optim_process.py (裡面路徑路徑要改一下qq)
+python3 plot_optim_process.py
+```
+### 1-2-2: plot relation between the grad norm and the loss
+1. train the model
+2. Run ``plot_optim_process.py`` to visualize the result
+```
+cd vis/hw1-2
+python3 plot_grad_loss.py
+```
+### 1-2-3: what happens when grad_norm = 0
+1. train the model
+2. Run ``plot_optim_process.py`` to visualize the result
+```
+cd vis/hw1-2
+python3 plot_hessian.py
+python3 plot_min_ratio.py
 ```
 ## 1-3

@@ -18,3 +18,9 @@ class Logger:
 
     def __str__(self):
         return json.dumps(self.entries, sort_keys=True, indent=4)
+    
+    def __len__(self):
+        return len(self.entries)
+        
+    def __getitem__(self, key):
+        return self.entries[key]

@@ -59,7 +59,7 @@ class CsvDataLoader(BaseDataLoader):
 class LinearReg(Dataset):
 
     def __init__(self, transform=None):
-        self.data = np.random.rand(2048, )
+        self.data = np.random.rand(10000, )
         self.transform = transform
 
     def __len__(self):

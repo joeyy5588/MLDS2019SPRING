@@ -4,6 +4,7 @@ import torch
 from torch.autograd import Variable
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 from model.model import DNN2, DNN5, DNN8
 
 # checkpoint = torch.load('../../saved/DNN-8/checkpoint-epoch50.pth')
@@ -23,8 +24,7 @@ if __name__ == '__main__':
         plt.title(func_name+' loss')
         plt.plot(x, y_target, 'k', label='Ground truth')
         for arch, color in zip(arch_list, color_list):
-            # checkpoint = torch.load('../../models/saved/1-1/'+arch+base_arch+'_'+func_name+'_checkpoint.pth.tar')
-            checkpoint = torch.load('../../saved/{}/model_best.pth'.format(arch))
+            checkpoint = torch.load('../../saved/{}/model_last.pth'.format(arch))
             model = eval(checkpoint['arch'])()
             model.load_state_dict(checkpoint['state_dict'])
             model.eval()
