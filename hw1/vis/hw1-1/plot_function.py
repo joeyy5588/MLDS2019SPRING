@@ -13,7 +13,7 @@ from model.model import DNN2, DNN5, DNN8
 if __name__ == '__main__':
     func_name_list = ['sinc']
     func_lambda_list = [lambda x: np.sin(5 * np.pi * x) / (5 * np.pi * x + 1e-10)]
-    arch_list = ['DNN2', 'DNN5', 'DNN8']
+    arch_list = ['DNN-2', 'DNN-5', 'DNN-8']
     color_list = ['r', 'g', 'b']
 
     plt.figure(figsize=(12, 9))
@@ -24,7 +24,7 @@ if __name__ == '__main__':
         plt.title(func_name+' loss')
         plt.plot(x, y_target, 'k', label='Ground truth')
         for arch, color in zip(arch_list, color_list):
-            checkpoint = torch.load('../../saved/{}/model_last.pth'.format(arch))
+            checkpoint = torch.load('../../saved/{}/checkpoint-epoch10000.pth'.format(arch))
             model = eval(checkpoint['arch'])()
             model.load_state_dict(checkpoint['state_dict'])
             model.eval()
