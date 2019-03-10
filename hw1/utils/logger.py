@@ -23,4 +23,8 @@ class Logger:
         return len(self.entries)
         
     def __getitem__(self, key):
-        return self.entries[key]
+        if key == -1: # indicate that we want to get the last one
+            return self.entries[self.__len__()]
+        else:
+            return self.entries[key]
+    

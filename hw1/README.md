@@ -31,7 +31,7 @@ cd vis/hw1-1
 python3 plot_loss_acc.py
 ```
 ## 1-2
-### 1-2-1: show that different optimization process will converge to the same point
+### 1-2-1: observe gradient norm during training
 1. train the model
 ```
 # mnist
