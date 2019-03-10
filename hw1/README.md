@@ -1,5 +1,12 @@
 # MLDS HW1
+## hw1(all)
+1. Plot model architecture. (要改model路徑跟input大小)
+```python
+### In directory hw1 ###
+python -m vis.model_architecture.vismodel
+```
 ## 1-1
+
 ### 1-1-1: plot the function and the predicted result
 1. Train the model and the checkpoint will automatically save the data for you.
 ```
