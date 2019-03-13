@@ -11,7 +11,7 @@ from math import log
 
 
 if __name__ == '__main__':
-
+    """
     arch_list = ['DNN-8']
     color_list = ['b']
     plt.figure()
@@ -33,7 +33,8 @@ if __name__ == '__main__':
         plt.legend(loc="best")
     plt.tight_layout()
     plt.savefig('plot_grad_loss_func.png')
-'''
+
+    """
     arch_list = ['CNN2']
     color_list = ['b']
     plt.figure()
@@ -41,8 +42,8 @@ if __name__ == '__main__':
         checkpoint = torch.load('../../saved/{}/model_last.pth'.format(arch))
         logger = checkpoint['logger']
         x = [entry['epoch'] for _, entry in logger.entries.items()]
-        loss = [entry['loss'] for _, entry in logger.entries.items()]
-        grad_norm = [entry['grad_norm'] for _, entry in logger.entries.items()]
+        loss = [log(entry['loss'], 10) for _, entry in logger.entries.items()]
+        grad_norm = [log(entry['grad_norm'], 10) for _, entry in logger.entries.items()]
 
         plt.subplot(2, 1, 1)
         plt.title('loss')
@@ -55,4 +56,4 @@ if __name__ == '__main__':
         plt.legend(loc="best")
     plt.tight_layout()
     plt.savefig('plot_grad_loss_mnist.png')
-'''  
+

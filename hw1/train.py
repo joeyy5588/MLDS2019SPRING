@@ -9,6 +9,19 @@ import model.model as module_arch
 from trainer import Trainer
 from utils import Logger
 
+def handle_args(config, args):
+    # use argument to overwrite the original config setting
+    if args.type != None:
+        config['arch']['type'] = args.type
+        config['name'] = args.type
+    if args.name != None:
+        config['name'] = args.name
+    if args.save != None:
+        config['trainer']['save_dir'] = args.save
+    if args.epoch != None:
+        config['trainer']['epochs'] = int(args.epoch)
+
+    return config
 
 def get_instance(module, name, config, *args):
     return getattr(module, config[name]['type'])(*args, **config[name]['args'])
@@ -52,15 +65,18 @@ if __name__ == '__main__':
                            help='indices of GPUs to enable (default: all)')
     parser.add_argument('--type', default=None, type=str,
                            help='model type')
+    parser.add_argument('--name', default=None, type=str,
+                           help='model name')
+    parser.add_argument('--save', default=None, type=str,
+                           help='save dir')
+    parser.add_argument('--epoch', default=None, type=str,
+                           help='epoch number')
     args = parser.parse_args()
 
     if args.config:
         # load config file
         config = json.load(open(args.config))
-        # use argument to overwrite the original config setting
-        if args.type != None:
-            config['name'] = args.type
-            config['arch']['type'] = args.type
+        config = handle_args(config, args)
         path = os.path.join(config['trainer']['save_dir'], config['name'])
     elif args.resume:
         # load config file from checkpoint, in case new config file is not given.
