@@ -1,8 +1,8 @@
 {
-    "name": "CNN1",
+    "name": "CNN2",
     "n_gpu": 1, 
     "arch": {
-        "type": "CNN1",
+        "type": "CNN2",
         "args": {
 
         }
@@ -11,9 +11,9 @@
         "type": "MnistDataLoader",
         "args":{
             "data_dir": "data/",
-            "batch_size": 256,
+            "batch_size": 128,
             "shuffle": true,
-            "validation_split": 0.1,
+            "validation_split": 0.2,
             "num_workers": 2
         }
     },
