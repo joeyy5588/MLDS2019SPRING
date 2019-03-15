@@ -12,6 +12,7 @@ from utils import Logger
 def handle_args(config, args):
     # use argument to overwrite the original config setting
     if args.type != None:
+        print(args.type)
         config['arch']['type'] = args.type
         config['name'] = args.type
     if args.name != None:
@@ -20,6 +21,18 @@ def handle_args(config, args):
         config['trainer']['save_dir'] = args.save
     if args.epoch != None:
         config['trainer']['epochs'] = int(args.epoch)
+    if args.period != None:
+        config['trainer']['save_period'] = args.period
+    if args.shuffle_ratio != None:
+        config['data_loader']['args']['shuffle_ratio'] = args.shuffle_ratio
+    if args.c1 != None:
+        config['arch']['args']['c1'] = args.c1
+    if args.c2 != None:
+        config['arch']['args']['c2'] = args.c2
+    if args.c3 != None:
+        config['arch']['args']['c3'] = args.c3
+    if args.c4 != None:
+        config['arch']['args']['c4'] = args.c4
 
     return config
 
@@ -71,6 +84,13 @@ if __name__ == '__main__':
                            help='save dir')
     parser.add_argument('--epoch', default=None, type=str,
                            help='epoch number')
+    parser.add_argument('--period', default=None, type=int, help='save_period')
+    parser.add_argument('--shuffle_ratio', default=None, type=float,
+                           help='shuffle_ratio')
+    parser.add_argument('--c1', default=None, type=float, help='c1')
+    parser.add_argument('--c2', default=None, type=float, help='c2')
+    parser.add_argument('--c3', default=None, type=float, help='c3')
+    parser.add_argument('--c4', default=None, type=float, help='c4')
     args = parser.parse_args()
 
     if args.config:

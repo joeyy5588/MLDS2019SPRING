@@ -61,3 +61,12 @@ python3 plot_hessian.py
 python3 plot_min_ratio.py
 ```
 ## 1-3
+
+### 1-3-3-1: Flatness:
+
+1. Need to comment **np.random.shuffle(idx_full)** in base_data_loader.py
+```
+cd vis/hw1-3
+python3 plot_flatness.py
+```
+

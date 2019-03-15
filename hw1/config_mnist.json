@@ -4,17 +4,17 @@
     "arch": {
         "type": "CNN2",
         "args": {
-
         }
     },
     "data_loader": {
         "type": "MnistDataLoader",
         "args":{
             "data_dir": "data/",
-            "batch_size": 128,
-            "shuffle": true,
+            "batch_size": 64,
+            "shuffle": false,
             "validation_split": 0.2,
-            "num_workers": 2
+            "num_workers": 2,
+            "shuffle_ratio": 0
         }
     },
     "optimizer": {

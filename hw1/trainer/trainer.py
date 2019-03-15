@@ -70,11 +70,15 @@ class Trainer(BaseTrainer):
                     100.0 * batch_idx / len(self.data_loader),
                     loss.item()))
                 #self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
+        #For parameters
+        #model_parameters = filter(lambda p: p.requires_grad, self.model.parameters())
+        #params = sum([np.prod(p.size()) for p in model_parameters])
 
         log = {
             'loss': total_loss / len(self.data_loader),
             'metrics': (total_metrics / len(self.data_loader)).tolist(),
-            'grad_norm': self._calc_gradnorm()
+            'grad_norm': self._calc_gradnorm(),
+            #'parameters': params
         }
 
         if self.do_validation:

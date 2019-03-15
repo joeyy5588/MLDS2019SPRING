@@ -73,6 +73,28 @@ class CNN3(BaseModel):
         x = self.fc(x)
         return F.log_softmax(x, dim=1)
 
+class CNNh(BaseModel):
+    def __init__(self, c1, c2, c3, c4, num_classes=10):
+        super(CNNh, self).__init__()
+        self.conv = nn.Sequential(
+            nn.Conv2d(1, int(8 * c1), kernel_size = 5, padding = 2),
+            nn.Conv2d(int(8 * c1), int(8 * c2), kernel_size = 5, padding = 2),
+            nn.MaxPool2d(2, 2),
+            nn.Conv2d(int(8 * c2), int(24 * c3), kernel_size = 5, padding = 2),
+            nn.Conv2d(int(24 * c3), int(32 * c4), kernel_size = 5, padding = 2),
+            nn.MaxPool2d(2, 2),
+        )
+        self.fc = nn.Sequential(
+            nn.Linear(int(7 * 7 * 32 * c4), 32),
+            nn.ReLU(),
+            nn.Linear(32, num_classes),
+        )
+    def forward(self, x):
+        x = self.conv(x)
+        x = x.view(x.shape[0], -1)
+        x = self.fc(x)
+        return F.log_softmax(x, dim=1)
+
 class DNN2(BaseModel):
     def __init__(self):
         super(DNN2, self).__init__()
