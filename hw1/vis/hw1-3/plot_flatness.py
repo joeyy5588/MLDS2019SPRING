@@ -131,7 +131,7 @@ def main():
     ax2.plot(a_list, acc_list, color = 'r', label = 'train')
     ax2.plot(a_list, val_acc_list, color = 'r', label = 'test', linestyle = 'dotted')
     ax2.tick_params(axis='both', labelcolor='r')
-    ax1.legend(loc="best")
+    ax1.legend(loc="best") 
     ax2.legend(loc="best")
     plt.savefig('plot_flatness_lr.png')
 
