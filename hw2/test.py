@@ -7,8 +7,9 @@ import torch
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--checkpoint', type=str)
-parser.add_argument('--save_path', type=str)
+parser.add_argument('--checkpoint', type=str, default='save/checkpoint.pth', help='the path of checkpoint to be loaded')
+parser.add_argument('--save_path', type=str, default='result.txt', help='the path to save result')
+parser.add_argument('--pad_len', type=int, default=15, help='the length of ')
 opt = parser.parse_args()
 
 w2i, i2w = build_dict('data')
@@ -16,7 +17,7 @@ w2i, i2w = build_dict('data')
 def batch_to_sentences(batch):
     sen_list = []
     for i in range(batch.shape[0]):
-        sen_list.append(_idxs_to_sentence(i2w, batch[i]))
+        sen_list.append(idxs_to_sentence(i2w, batch[i]))
     return sen_list
 
 def idxs_to_sentence(i2w, sen_idxs):
@@ -28,7 +29,7 @@ def idxs_to_sentence(i2w, sen_idxs):
     return ' '.join(sen)
 
 if __name__ == '__main__':
-    dataloader = DataLoader(data_dir = 'data', word_to_index = w2i, batch_size = 1, shuffle = False, validation_split = 0.0, training = False)
+    dataloader = DataLoader(data_dir = 'data', word_to_index = w2i, batch_size = 1, pad_len = opt.pad_len, shuffle = False, validation_split = 0.0, training = False)
     model = Model(n_embed = len(w2i), word_to_index = w2i)
     state_dict = torch.load(opt.checkpoint)['state_dict']
     model.load_state_dict(state_dict)
