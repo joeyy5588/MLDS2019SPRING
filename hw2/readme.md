@@ -13,7 +13,7 @@ They will not import each other.
 2. ``debug.py``: test each package independently
 ## Model Structure
 
-<img src = "assets/s2vt.png" >
+<img src = "assets/s2vt.png" width = "500px">
 
 ## Reference
 https://github.com/victoresque/pytorch-template
