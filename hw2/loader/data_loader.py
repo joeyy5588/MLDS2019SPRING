@@ -13,7 +13,11 @@ from torch.utils.data.dataloader import default_collate
 class Dataset(data.Dataset):
     def __init__(self, data_dir, word_to_index):
         """
-        data_dir: the path to data folder. ex: data/
+        Usage:
+            Parse data.
+        Args:
+            data_dir: the path to data folder. ex: data/
+            word_to_index: the one-to-one dictionary which map word to index
         """
         id_file = os.path.join(data_dir, 'training_data', 'id.txt')
         id_list = []
@@ -42,6 +46,10 @@ class Dataset(data.Dataset):
         self.w2i = word_to_index
 
     def __getitem__(self, index):
+        """
+        Note:
+            return text_list because we want to use it to calculate bleu rate
+        """
         # re-assign
         feat_list, text_list = self.feat_list, self.text_list
         # random infex from feat and text
@@ -56,7 +64,10 @@ class Dataset(data.Dataset):
 class Test_dataset(data.Dataset):
     def __init__(self, data_dir):
         """
-        data_dir: the path to data folder. ex: data/
+        Usage:
+            Parse data.
+        Args:
+            data_dir: the path to data folder. ex: data/
         """
         id_file = os.path.join(data_dir, 'testing_data', 'id.txt')
         id_list = []
@@ -85,7 +96,10 @@ class Test_dataset(data.Dataset):
 
 def custom_collate(batch):
     """
-    We use custom_collate to return str array when calling __next__ in dataloader
+    Usage:
+        In default_collate function, it can only return tensor when iterating the dataloader.
+        Therfore, we should customize the collate function to return what we expect.
+        ref: https://discuss.pytorch.org/t/building-custom-dataset-how-to-return-ids-as-well/22931/6
     """
     new_batch = []
     s_list = []

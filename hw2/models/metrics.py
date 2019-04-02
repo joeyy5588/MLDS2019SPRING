@@ -8,7 +8,9 @@ from functools import reduce
 
 def BLEU_metric(s_list, t_list):
     """
-    Arguments:
+    Usage:
+        calculate BLEU rate of a batch of prediction
+    Args:
         s_list: a batch of candidate sentence
         t_list: a batch of reference sentence(s)
     """
@@ -21,7 +23,9 @@ def BLEU_metric(s_list, t_list):
 
 def BLEU(s,t,flag = False):
     """
-    Arguments:
+    Usage:
+        calculate BLEU rate of a sentence
+    Args:
         s: candidate sentence
         t: reference sentence(s)
         flag: if t is an array, flag == True.

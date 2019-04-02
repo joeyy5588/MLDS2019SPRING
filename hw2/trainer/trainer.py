@@ -5,6 +5,7 @@ import random
 import torch.nn as nn
 from torchvision.utils import save_image
 from models import BLEU_metric
+from utils import ensure_dir
 
 class Trainer:    
     def __init__(self, model, index_to_word, dataloader, val_dataloader, opt):
@@ -64,9 +65,11 @@ class Trainer:
             self.logger.info('\tSample {}:'.format(n))
             self.logger.info('\tGround Truth: {}'.format(self._idxs_to_sentence(sen['gt'][i])))
             self.logger.info('\tPrediction: {}'.format(self._idxs_to_sentence(sen['pred'][i])))
+
     def _schedule_sampling(self, epoch):
         p = 0.5
         return p
+
     def _train_epoch(self, epoch):
         device, model, criterion, optimizer = self.device, self.model, self.criterion, self.optimizer
         model.train()
@@ -153,6 +156,3 @@ class Trainer:
             self.all_log = checkpoint['log']
         except:
             self.logger.error('[Resume] Cannot load from checkpoint')
-
-def ensure_dir(dir):
-    os.makedirs(dir, exist_ok=True)

@@ -1,6 +1,6 @@
 """
 In this file, 
-we will read in training and testing data together to construct a word-to-index dictionary
+
 """
 import os
 import json
@@ -8,6 +8,8 @@ import re
 
 def build_dict(data_dir):
     """
+    Usage:
+        Use training and testing data together to construct a word-to-index dictionary and index-to-word dictionary.
     Return:
         1. word_to_index dictionary
         2. index_to_word dictionary
@@ -41,8 +43,14 @@ def build_dict(data_dir):
 
     return w2i, i2w
 
-def sentence_to_indexs(sen, w2i, pad = 20):
-    
+def sentence_to_indexs(sen, w2i, pad = 15):
+    """
+    Usage:
+        convert a sentence to index array.
+    Example:
+        pad = 5
+        I am byron. -> [I, am, byron, eos, pad] -> correspondind indexs
+    """
     i_list = []
     pad_idx = 0
     sen = re.sub('[.,!]', '', sen)
@@ -59,3 +67,5 @@ def sentence_to_indexs(sen, w2i, pad = 20):
     return i_list
 
 
+def ensure_dir(dir):
+    os.makedirs(dir, exist_ok=True)
