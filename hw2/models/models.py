@@ -54,6 +54,8 @@ class Model(BaseModel):
         # D_in dim: (seq_len, batch, E_hidden_dim + EM_hidden_dim)
         D_in = torch.cat((EM_out_pad, E_out), dim = 2)
 
+        D_out, (_, _) = self.D(D_in)
+
         """
         [Decoding stage]
         1. E_in is padded with zeros
@@ -64,7 +66,6 @@ class Model(BaseModel):
 
         seq_len = idxs.shape[1]
         all_D_out = torch.Tensor().to(device)
-        D_out = None
 
         """
         We need to iterate the sequence rather than put them all into LSTM 

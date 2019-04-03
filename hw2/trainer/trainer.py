@@ -67,7 +67,7 @@ class Trainer:
             self.logger.info('\tPrediction: {}'.format(self._idxs_to_sentence(sen['pred'][i])))
 
     def _schedule_sampling(self, epoch):
-        p = 0.5
+        p = 1.0
         return p
 
     def _train_epoch(self, epoch):
