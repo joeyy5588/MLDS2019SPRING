@@ -24,6 +24,6 @@ if __name__ == '__main__':
     w2i, i2w = build_dict('data')
     dataloader = DataLoader(data_dir = 'data', word_to_index = w2i, batch_size = opt.batch, pad_len = opt.pad_len, shuffle = True, validation_split = 0.2)
     val_dataloader = dataloader.split_validation()
-    model = Model(n_embed = len(w2i), word_to_index = w2i)
+    model = Model(n_embed = len(w2i), word_to_index = w2i, batch_size = opt.batch, rnn_type = "GRU", attention_type = "general", bi = True)
     trainer = Trainer(model = model, index_to_word = i2w, dataloader = dataloader, val_dataloader = val_dataloader, opt = opt)
     trainer.train()

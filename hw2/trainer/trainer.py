@@ -67,7 +67,8 @@ class Trainer:
             self.logger.info('\tPrediction: {}'.format(self._idxs_to_sentence(sen['pred'][i])))
 
     def _schedule_sampling(self, epoch):
-        p = 0.5
+        #p = 1 * (1000 - epoch) / 1000 # Linear
+        p = 1
         return p
 
     def _train_epoch(self, epoch):
@@ -80,7 +81,7 @@ class Trainer:
             optimizer.zero_grad()
             feat, idxs = feat.to(device), idxs.to(device)
             p = self._schedule_sampling(epoch)
-            out = model(feat, idxs, p)
+            out = model(feat, idxs, p)[:len(sens), :, :]
             total_sen['gt'] = torch.cat((total_sen['gt'], idxs), dim = 0)
             total_sen['pred'] = torch.cat((total_sen['pred'], torch.argmax(out, dim = 2)), dim = 0)
             score = self.metrics(self._batch_to_sentences(torch.argmax(out, dim = 2)), sens) 
@@ -108,7 +109,7 @@ class Trainer:
         total_sen = {'gt': torch.tensor([], dtype = torch.long).to(device), 'pred': torch.tensor([], dtype = torch.long).to(device)}
         for i, ((feat, idxs), sens) in enumerate(dataloader):
             feat, idxs = feat.to(device), idxs.to(device)
-            out = model(feat, idxs)
+            out = model(feat, idxs)[:len(sens), :, :]
             total_sen['gt'] = torch.cat((total_sen['gt'], idxs), dim = 0)
             total_sen['pred'] = torch.cat((total_sen['pred'], torch.argmax(out, dim = 2)), dim = 0)
             score = self.metrics(self._batch_to_sentences(torch.argmax(out, dim = 2)), sens) 
