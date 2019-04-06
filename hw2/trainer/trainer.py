@@ -68,13 +68,9 @@ class Trainer:
             self.logger.info('\tPrediction: {}'.format(self._idxs_to_sentence(sen['pred'][i])))
 
     def _schedule_sampling(self, epoch):
-<<<<<<< HEAD
-        p = 1.0
-=======
         #p = 1 * (1000 - epoch) / 1000 # Linear
         #p = 1
         p = 1 - 1/(1+math.exp(-4*epoch / 500 + 8)) # inverse sigmoid
->>>>>>> joey
         return p
 
     def _train_epoch(self, epoch):

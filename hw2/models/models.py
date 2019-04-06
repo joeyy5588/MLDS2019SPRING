@@ -222,6 +222,7 @@ class Attention(BaseModel):
             last_hidden = self.phi(last_hidden)
             encoder_outputs = self.psi(encoder_outputs)
         # [32, 80]
+        
         attention_energies = self._score(last_hidden, encoder_outputs, self.method)
         #print("attention: " , attention_energies.size(), attention_energies)
         #if seq_len is not None:
