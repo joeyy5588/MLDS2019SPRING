@@ -6,6 +6,7 @@ import torch.nn as nn
 from torchvision.utils import save_image
 from models import BLEU_metric
 from utils import ensure_dir
+import math
 
 class Trainer:    
     def __init__(self, model, index_to_word, dataloader, val_dataloader, opt):
@@ -68,7 +69,8 @@ class Trainer:
 
     def _schedule_sampling(self, epoch):
         #p = 1 * (1000 - epoch) / 1000 # Linear
-        p = 1
+        #p = 1
+        p = 1 - 1/(1+math.exp(-4*epoch / 500 + 8)) # inverse sigmoid
         return p
 
     def _train_epoch(self, epoch):

@@ -30,7 +30,7 @@ def idxs_to_sentence(i2w, sen_idxs):
 
 if __name__ == '__main__':
     dataloader = DataLoader(data_dir = 'data', word_to_index = w2i, batch_size = 1, pad_len = opt.pad_len, shuffle = False, validation_split = 0.0, training = False)
-    model = Model(n_embed = len(w2i), word_to_index = w2i)
+    model = Model(n_embed = len(w2i), word_to_index = w2i, batch_size = 32, rnn_type = "LSTM", attention_type = "concat", bi = True)
     state_dict = torch.load(opt.checkpoint)['state_dict']
     model.load_state_dict(state_dict)
 

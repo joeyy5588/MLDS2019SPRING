@@ -38,7 +38,7 @@ class Model(BaseModel):
             self.A = Attention(self.batch_size, self.hidden_size, method = attention_type, mlp = False)
             self.C = nn.Sequential(
                 nn.Linear(512, 2048),
-                nn.ReLU(True),
+                #nn.ReLU(True),
                 nn.Linear(2048, n_embed),
                 nn.LogSoftmax(dim = 1)
             )
@@ -204,8 +204,8 @@ class Attention(BaseModel):
         elif method == 'general':
             self.Wa = nn.Linear(hidden_size, hidden_size, bias=False)
         elif method == "concat":
-            self.Wa = nn.Linear(hidden_size, hidden_size, bias=False)
-            self.va = nn.Parameter(torch.FloatTensor(batch_size, hidden_size))
+            self.Wa = nn.Linear(hidden_size * 2, hidden_size, bias=False)
+            self.va = nn.Parameter(torch.ones(batch_size, hidden_size))
         elif method == 'bahdanau':
             self.Wa = nn.Linear(hidden_size, hidden_size, bias=False)
             self.Ua = nn.Linear(hidden_size, hidden_size, bias=False)
@@ -249,9 +249,9 @@ class Attention(BaseModel):
             return encoder_outputs.bmm(x).squeeze(-1)
 
         elif method == "concat":
-            x = last_hidden.unsqueeze(1)
-            x = F.tanh(self.Wa(torch.cat((x, encoder_outputs), 1)))
-            return x.bmm(self.va.unsqueeze(2)).squeeze(-1)
+            x = last_hidden.unsqueeze(1).repeat(1, 80, 1)
+            x = torch.tanh(self.Wa(torch.cat((x, encoder_outputs), 2)))#tanh(??)
+            return x.bmm(self.va[:x.size()[0], :].unsqueeze(2)).squeeze(-1)
 
         elif method == "bahdanau":
             x = last_hidden.unsqueeze(1)
