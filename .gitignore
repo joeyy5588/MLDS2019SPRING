@@ -1,4 +1,5 @@
 .vscode/
+sftp-config.json
 __pycache__
 .DS_Store
 sftp-config.json
