@@ -38,8 +38,11 @@ class Model(BaseModel):
             self.A = Attention(self.batch_size, self.hidden_size, method = attention_type, mlp = False)
             self.C = nn.Sequential(
                 nn.Linear(512, 2048),
-                #nn.ReLU(True),
+                #nn.BatchNorm1d(2048),
+                nn.ReLU(True),
                 nn.Linear(2048, n_embed),
+                #nn.BatchNorm1d(n_embed),
+                #nn.ReLU(True),
                 nn.LogSoftmax(dim = 1)
             )
         else:
@@ -117,6 +120,8 @@ class Model(BaseModel):
             hidden = None
             if self.bi:
                 hidden = torch.sum(D_h, 0)
+            else:
+                hidden = D_h
             # schedule sampling
             use_gt = random.random() < p
             
@@ -170,9 +175,9 @@ class Model(BaseModel):
                         D_out, D_h = self.D(D_in, D_h.unsqueeze(0))
                 if self.bi:
                     D_out = D_out[:, :, :self.hidden_size] + D_out[:, :, self.hidden_size:]
-                #all_D_out: batch hidden * 2
+                #all_D_out: batch, hidden * 2
                 all_D_out = torch.cat((D_out.squeeze(1), context.squeeze(1)), dim = 1)
-                #C_out: batch, 2, n_embed(6717)
+                #C_out: batch, n_embed(6717)
                 C_out = self.C(all_D_out)
                 if C_out.size()[0] != self.batch_size:
                     C_pad = torch.zeros(self.batch_size - C_out.size()[0], C_out.size()[1]).to(device)
@@ -205,11 +210,12 @@ class Attention(BaseModel):
             self.Wa = nn.Linear(hidden_size, hidden_size, bias=False)
         elif method == "concat":
             self.Wa = nn.Linear(hidden_size * 2, hidden_size, bias=False)
-            self.va = nn.Parameter(torch.ones(batch_size, hidden_size))
+            #self.va = nn.Parameter(torch.ones(batch_size, hidden_size))
+            self.va = nn.Parameter(torch.randn(batch_size, hidden_size, dtype=torch.float))
         elif method == 'bahdanau':
             self.Wa = nn.Linear(hidden_size, hidden_size, bias=False)
             self.Ua = nn.Linear(hidden_size, hidden_size, bias=False)
-            self.va = nn.Parameter(torch.FloatTensor(batch_size, hidden_size))
+            self.va = nn.Parameter(torch.randn(batch_size, hidden_size, dtype=torch.float))
         else:
             raise NotImplementedError
         self.mlp = mlp
