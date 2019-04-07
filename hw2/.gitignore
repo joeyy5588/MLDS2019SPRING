@@ -1,5 +1,7 @@
+# ignore these files
 *.txt
 data/
 save/
-*.txt
 *.pyc
+# but not these files
+!result/*
