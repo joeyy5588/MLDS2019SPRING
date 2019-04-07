@@ -7,7 +7,7 @@ import torch
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--n_epochs', type=int, default=1100, help='number of epochs')
+parser.add_argument('--n_epochs', type=int, default=2000, help='number of epochs')
 parser.add_argument('--save_dir', type=str, default='save/', help='the save path of checkpoint')
 parser.add_argument('--batch', type=int, default=32, help='number of batchs')
 parser.add_argument('--lr', type=float, default=1e-3, help='learning')
