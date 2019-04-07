@@ -1,8 +1,10 @@
 # Pytorch Simple Template
 ## File Structure
 - Logic
-Modules are only used together in root python file like ``train.py``.
-They will not import each other.
+  
+    Modules are only used together in root python file like ``train.py``.
+    They will not import each other.
+    
 - Package
 1. ``loader``: dataset and dataloader
 2. ``models``: networks, loss and metrics
