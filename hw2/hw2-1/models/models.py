@@ -147,6 +147,7 @@ class Model(BaseModel):
                     EM_out = self.EM(in_idxs).unsqueeze(1)
                 #print("PREV: ", EM_out.size())
             if self.attention_type is None:
+                # TODO: need to give ht and ct to Decoder
                 E_in_pad = torch.zeros(1, E_in.shape[0], 512).to(device)
                 E_out, (_, _) = self.E(E_in_pad)
                 D_in = torch.cat((EM_out, E_out), dim = 2)
