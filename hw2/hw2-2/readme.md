@@ -11,6 +11,11 @@
 2. ``test.py``: evaluation
 
 ## Performance
+1. Training process
+The whole process takes around 20hrs.
+<img src='assets/plot.png'>
+
+1. Evaulation
 ```
 perplexity: 7.486338 (baseline: < 100)
 correlation score: 0.55515 (baseline: > 0.45)
