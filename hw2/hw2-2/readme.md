@@ -13,8 +13,8 @@
 ## Performance
 1. Training process
 
-The whole process takes around 20hrs.
-<img src='assets/plot.png'>
+    The whole process takes around 20hrs.
+    <img src='assets/plot.png' width='500px'>
 
 2. Evaulation
 ```
