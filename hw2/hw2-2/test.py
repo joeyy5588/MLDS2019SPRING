@@ -6,7 +6,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--checkpoint', type=str, default='saved/checkpoint.pth', help='the path of checkpoint to be loaded')
-parser.add_argument('--result_path', type=str, default='result.txt', help='the path to save result')
+parser.add_argument('--save_path', type=str, default='result.txt', help='the path to save result')
 parser.add_argument('--pad_len', type=int, default=15, help='the length of input sentences')
 opt = parser.parse_args()
 
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     model.to(device)
     model.eval()
     
-    f = open(opt.result_path, "w")
+    f = open(opt.save_path, "w")
 
     result = ''
     for i, q_idxs in enumerate(dataloader):
