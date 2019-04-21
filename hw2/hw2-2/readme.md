@@ -15,7 +15,6 @@
 
     The whole process takes around 20hrs.
 
-    
     <img src='assets/plot.png' width='500px'>
 
 2. Evaulation
@@ -50,4 +49,5 @@ python3 test.py --checkpoint xxx.pth --save_path result.txt
 TODO
 
 ## Reference
-https://github.com/victoresque/pytorch-template
+code structure: https://github.com/victoresque/pytorch-template
+seq2seq model: https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html#the-seq2seq-model

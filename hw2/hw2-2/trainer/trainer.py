@@ -67,12 +67,12 @@ class Trainer:
             total_sen['gt'] = torch.cat((total_sen['gt'], a_idxs), dim = 0)
             total_sen['pred'] = torch.cat((total_sen['pred'], torch.argmax(out, dim = 2)), dim = 0)
 
-            # use 2d nll_loss
+            # use 2d nll_loss 
             loss = criterion(out.transpose(1, 2).unsqueeze(3), a_idxs.unsqueeze(2))
             total_loss += loss.item()
             loss.backward()
             optimizer.step()
-            self.logger.info('[EPOCH {}/{}] [BATCH: {}/{}] [LOSS: {:.3f}]'.format(epoch, self.n_epochs, i, len(self.dataloader), loss.item()))
+            self.logger.info('[EPOCH {}/{}] [BATCH: {}/{}] [LOSS: {:.3f}]'.format(epoch, self.begin_epoch + self.n_epochs, i, len(self.dataloader), loss.item()))
         log = {
             'epoch': epoch,
             'loss': total_loss / len(dataloader),
