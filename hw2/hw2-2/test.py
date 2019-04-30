@@ -1,6 +1,6 @@
 import logging
 from loader import DataLoader, Dataset
-from models import Seq2Seq, Lang
+from models import Seq2Seq, Lang, beam_search
 import torch
 import argparse
 
@@ -44,11 +44,12 @@ if __name__ == '__main__':
     result = ''
     for i, q_idxs in enumerate(dataloader):
         q_idxs = q_idxs.to(device)
+        #pred_i = beam_search(model, 1, q_idxs, None)
         out = model(q_idxs, None, 0)
         pred_i = torch.argmax(out, dim = 2)
         pred_sen = batch_to_sentences(pred_i)
         for s in pred_sen:
-            print(s)
+            print(i, s)
             result += '{}\n'.format(s)
 
     f.write(result)
