@@ -1,0 +1,7 @@
+# ignore these files
+logging.txt
+data/
+save/
+*.pyc
+# but not these files
+!result/*

@@ -147,6 +147,7 @@ class Model(BaseModel):
                     EM_out = self.EM(in_idxs).unsqueeze(1)
                 #print("PREV: ", EM_out.size())
             if self.attention_type is None:
+                # TODO: need to give ht and ct to Decoder
                 E_in_pad = torch.zeros(1, E_in.shape[0], 512).to(device)
                 E_out, (_, _) = self.E(E_in_pad)
                 D_in = torch.cat((EM_out, E_out), dim = 2)
@@ -228,12 +229,11 @@ class Attention(BaseModel):
             last_hidden = self.phi(last_hidden)
             encoder_outputs = self.psi(encoder_outputs)
         # [32, 80]
+        
         attention_energies = self._score(last_hidden, encoder_outputs, self.method)
         #print("attention: " , attention_energies.size(), attention_energies)
-
         #if seq_len is not None:
             #attention_energies = self.mask_3d(attention_energies, seq_len, -float('inf'))
-        
         return F.softmax(attention_energies, -1)
     def _score(self, last_hidden, encoder_outputs, method):
         """
