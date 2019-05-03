@@ -7,9 +7,10 @@ import random
 import torch.nn as nn
 import math
 from torchvision.utils import save_image
+import torch.autograd as autograd
 
 
-class DCGANTrainer:    
+class WGANGPTrainer:    
     def __init__(self, gen, dis, dataloader, opt):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.opt = opt
@@ -22,8 +23,8 @@ class DCGANTrainer:
         self.dis = dis
         self.gen_iter = 1
         self.dis_iter = 1
-        self.gen_optimizer = torch.optim.Adam(self.gen.parameters(), lr = 0.0002, betas=(0.5, 0.999))
-        self.dis_optimizer = torch.optim.Adam(self.dis.parameters(), lr = 0.0002, betas=(0.5, 0.999))
+        self.gen_optimizer = torch.optim.Adam(self.gen.parameters(), lr = 0.0001, betas=(0.5, 0.9))
+        self.dis_optimizer = torch.optim.Adam(self.dis.parameters(), lr = 0.0001, betas=(0.5, 0.9))
         self.fixed_noise = torch.randn(25, self.noise_dim, 1, 1, device = self.device)
         self.criterion = nn.BCELoss()
         self.real_label = 1
@@ -51,8 +52,8 @@ class DCGANTrainer:
                 'gen_state_dict': self.gen.state_dict(),
                 'dis_state_dict': self.dis.state_dict(),
             }
-            if (i + 1)%5 == 0:
-                check_path = os.path.join(opt.save_dir, 'checkpoint_' + str(i+1) + '.pth')
+            if (i+1)%5 == 0:
+                check_path = os.path.join(opt.save_dir, 'wgan_checkpoint_' + str(i+1) + '.pth')
                 torch.save(checkpoint, check_path)
 
     def _train_epoch(self, epoch):
@@ -64,21 +65,23 @@ class DCGANTrainer:
         for batch_idx, real_images  in enumerate(self.dataloader):
 
             #Train Discriminator
-            for p in self.dis.parameters():
-                p.data.clamp_(-0.01, 0.01)
             self.dis_optimizer.zero_grad()
             real_images = real_images.to(self.device)
             input_noise = torch.randn(real_images.size()[0], self.noise_dim, 1, 1).to(self.device)
             fake_images = self.gen(input_noise).detach()
+            alpha = torch.randn(real_images.size()[0], 1, 1, 1).to(self.device)
+            interpolate_images = (alpha * real_images + ((1 - alpha) * fake_images)).to(self.device).requires_grad_(True)
             real_label = torch.ones(real_images.size()[0]).to(self.device)
             fake_label = torch.zeros(real_images.size()[0]).to(self.device)
             real_predict = self.dis(real_images)#.view(-1)
             fake_predict = self.dis(fake_images)#.view(-1)
-            real_loss = self.criterion(real_predict, real_label)
-            fake_loss = self.criterion(fake_predict, fake_label)
+            interpolate_predict = self.dis(interpolate_images)
+            real_loss = real_predict.mean()
+            fake_loss = fake_predict.mean()
+            interpolate_loss = self.gp_loss(interpolate_predict, interpolate_images, real_label)
             D_x = real_predict.mean().item()
             D_G_z1 = fake_predict.mean().item()
-            loss_d = (real_loss + fake_loss) / 2
+            loss_d = -real_loss + fake_loss + 10 * interpolate_loss
             loss_d.backward()
             self.dis_optimizer.step()
             #Train Generator
@@ -86,7 +89,7 @@ class DCGANTrainer:
             input_noise = torch.randn(real_images.size()[0], self.noise_dim, 1, 1).to(self.device)
             fake_images = self.gen(input_noise)
             fake_predict = self.dis(fake_images)#.view(-1)
-            loss_g = self.criterion(fake_predict, real_label)
+            loss_g = -fake_predict.mean()
             D_G_z2 = fake_predict.mean().item()
             loss_g.backward()
             self.gen_optimizer.step()
@@ -102,14 +105,19 @@ class DCGANTrainer:
             'Dis_loss': D_sum_loss
         }
         print("======================================================================================")
-        print('FINISH EPOCH: [%d/%d] Loss_D: %.4f Loss_G: %.4f'% (epoch + 1, self.n_epochs, D_sum_loss, G_sum_loss))
+        print('FINISH EPOCH: [%d/%d] Loss_D: %.4f Loss_G: %.4f'% ((epoch + 1), self.n_epochs, D_sum_loss, G_sum_loss))
         print("======================================================================================")
-        if (epoch + 1)%5 == 0:
+        if (epoch+1)%5 == 0:
             with torch.no_grad():
                 fixed_image = self.gen(self.fixed_noise)
-                save_image(fixed_image.data[:25], "saved/images_%d.png" % (epoch + 1), nrow = 5, normalize = True)
+                save_image(fixed_image.data[:25], "saved/wgan_images_%d.png" % (epoch+1), nrow = 5, normalize = True)
 
         return log
+
+    def gp_loss(self, pred, img, grad_outputs):
+        gradients = autograd.grad(pred, img, grad_outputs=grad_outputs, create_graph=True, only_inputs=True)[0]
+        gradients = gradients.view(gradients.size(0), -1)
+        return ((gradients.norm(2, dim=1) - 1) ** 2).mean()
 
     def _prepare_gpu(self):
         n_gpu = torch.cuda.device_count()
