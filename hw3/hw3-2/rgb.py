@@ -57,10 +57,12 @@ if __name__ == '__main__':
     n_row = 15
     for x in np.arange(0, 1 + 0.1, 0.1):
         curr = (1 - x) * red + x * white
-        rgb_range = np.ceil(np.max(curr) - np.min(curr))
+        # print(curr)
+        rgb_range = np.ceil(np.max(curr[0:3]) - np.min(curr[0:3]))
         sample_rate = rgb_range * len(stage) // n_row
         # print(curr)
         # print(rgb_range * len(stage))
+        # input()
         # print(sample_rate)
         count = 0
         for s in range(len(stage)):
@@ -78,6 +80,6 @@ if __name__ == '__main__':
                 # print(condition)
                 # input()
         # print(count)
-
+        # print(image_container.shape[0])
 
     save_image(image_container, os.path.join(opt.save_dir, 'result.png'), nrow = n_row, normalize = True)
