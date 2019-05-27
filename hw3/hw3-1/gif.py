@@ -20,7 +20,7 @@ def add_title(image, title):
     draw = ImageDraw.Draw(image)
     # font = ImageFont.truetype(<font-file>, <font-size>)
     caption=title
-    font = ImageFont.truetype("Microsoft-Sans-Serif.ttf", 30)
+    font = ImageFont.truetype(os.path.join('utils', "Microsoft-Sans-Serif.ttf"), 30)
     w, h = font.getsize(caption)
     # draw.text((x, y),"Sample Text",(r,g,b))
     draw=ImageDraw.Draw(bi)
@@ -31,6 +31,7 @@ file_names = sorted(
     (os.path.join(opt.dir ,fn) for fn in os.listdir(opt.dir) if fn.endswith('.png')),
     key = lambda x: int(re.findall(r'\d+', x)[0])
 )
+
 
 images = []
 for (i, fn) in enumerate(file_names):
