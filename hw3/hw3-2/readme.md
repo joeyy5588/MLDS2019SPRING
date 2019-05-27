@@ -5,7 +5,7 @@
 Given a dataset with different hair and eyes color, we want to learn a generator which can generate an image with certain hair/eyes color.
 
 ## 2. Method(very detailed setting)
-1. Conditional GAN)
+1. Conditional GAN
 
   1. Model structure
 
@@ -207,4 +207,34 @@ Given a dataset with different hair and eyes color, we want to learn a generator
    | -------------------------------- |
    | <img src="assets/3-5-intro.png"> |
 ## 4. Inference
-## 
+### Basic
+
+1. Pairs of hair/eye colors
+
+   | Row  | 1                    | 2                      | 3                 | 4                    | 5                       |
+   | ---- | -------------------- | ---------------------- | ----------------- | -------------------- | ----------------------- |
+   | Pair | pink hair black eyes | black hair purple eyes | red hair red eyes | aqua hair green eyes | blonde hair orange eyes |
+
+   <img src='assets/3-4-1.png'>
+
+2. Fix eye change hair
+
+   <img src='assets/3-4-2.png'>
+
+3. Fix hair change eye
+
+   <img src='assets/3-4-3.png'>
+
+4. Row: hair, Col:eye
+
+   <img src='assets/3-4-4.png' width='500px'>
+
+### Advance
+
+1. Given arbitrary hair and eye colors
+
+   ``Todo``
+
+2. Big color map
+
+   <img src='assets/3-5-a-2.png'>

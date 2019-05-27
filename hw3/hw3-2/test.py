@@ -8,12 +8,12 @@ from torchvision.utils import save_image
 from utils import embed, ensure_dir
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-c', '--checkpoint', type=str, default='saved/checkpoint_75.pth', help='the path of checkpoint to be loaded')
+parser.add_argument('-c', '--checkpoint', type=str, default='saved/case4/checkpoint_27.pth', help='the path of checkpoint to be loaded')
 parser.add_argument('-s', '--save_dir', type=str, default='results', help='the path to save result')
-parser.add_argument('-m', '--method', type=str, default='acgan')
-parser.add_argument('-e', '--nemb', type=int, default=120)
+parser.add_argument('-m', '--method', type=str, default='cgan')
+parser.add_argument('-e', '--nemb', type=int, default=22)
 opt = parser.parse_args()
-ensure_dir(opt.save_dir)
+ensure_dir(opt.save_dir) 
 NOISE_DIM = 100
 NF = 64
 N_EMB = opt.nemb
@@ -49,6 +49,19 @@ if __name__ == '__main__':
         with torch.no_grad():
             fixed_image = G(fixed_noise, fixed_condition)
             save_image(fixed_image.data[:12*10], os.path.join(opt.save_dir, 'result%d.png' % r), nrow = 10, normalize = True)
-    
+
+    # for r in range(10):
+    #     fixed_noise = torch.randn(10, noise_dim, device = device)# .repeat(120, 1)
+    #     fixed_condition = torch.zeros(10, N_EMB, device = device)
+    #     # code = [(8, 1), (1, 7), (10, 8), (0, 4), (2, 5)]
+    #     code = [(1, i) for i in range(10)]
+        
+    #     for i in range(10):
+    #         fixed_condition[i] = embed(code[i][0], code[i][1], n_emb = n_emb).to(device)
+
+    #     with torch.no_grad():
+    #         fixed_image = G(fixed_noise, fixed_condition)
+    #         save_image(fixed_image.data[:10], os.path.join(opt.save_dir, 'result%d.png' % r), nrow = 10, normalize = True)
+
     f = open(os.path.join(opt.save_dir, 'status.txt'), 'w')
     f.write(str(opt))

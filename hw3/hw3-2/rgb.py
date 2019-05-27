@@ -10,7 +10,7 @@ from torchvision.utils import save_image
 from utils import embed, ensure_dir, rgb_tensor
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--checkpoint', type=str, default='saved/case7/checkpoint_20.pth', help='the path of checkpoint to be loaded')
+parser.add_argument('--checkpoint', type=str, default='saved/case5/checkpoint_21.pth', help='the path of checkpoint to be loaded')
 parser.add_argument('--save_dir', type=str, default='./', help='the path to save result')
 parser.add_argument('--method', type=str, default='cgan')
 parser.add_argument('--nemb', type=int, default=6)
@@ -47,14 +47,14 @@ if __name__ == '__main__':
     # y(x(a,b,c) + (1-x)(255,255,255))+(1-y)(0,0,0)
     # x(a,b,c) + (1-x)(255,255,255)
     # hr, hg, hb = 255, 122, 122
-    er, eg, eb = 0, 0, 0
+    er, eg, eb = 0, 0, 255
 
     red = np.array([255, 0, 0, er, eg, eb])
     black = np.array([0, 0, 0, er, eg, eb])
     white = np.array([255, 255, 255, er, eg, eb])
     
     stage = np.array([[0, 0, +1], [-1, 0 ,0], [0, +1, 0], [0, 0, -1], [+1, 0, 0], [0, -1, 0]])
-    n_row = 35
+    n_row = 15
     for x in np.arange(0, 1 + 0.1, 0.1):
         curr = (1 - x) * red + x * white
         rgb_range = np.ceil(np.max(curr) - np.min(curr))
