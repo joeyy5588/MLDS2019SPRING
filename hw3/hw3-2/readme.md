@@ -7,7 +7,7 @@ Given a dataset with different hair and eyes color, we want to learn a generator
 ## 2. Method(very detailed setting)
 1. Conditional GAN
 
-  1. Model structure
+   1. Model structure
 
     ```python
     [GEN_STRUCTURE]
@@ -67,9 +67,7 @@ Given a dataset with different hair and eyes color, we want to learn a generator
     )
     ```
 
-  2. Optimizer and Criterion
-
-
+   2.  Optimizer and Criterion
 
      ```python
      # optimizer
@@ -81,9 +79,7 @@ Given a dataset with different hair and eyes color, we want to learn a generator
 
 2. ACGAN
 
-  1. Model structure
-
-
+    1. Model structure
 
      ```python
      [GEN_STRUCTURE]
@@ -146,7 +142,7 @@ Given a dataset with different hair and eyes color, we want to learn a generator
      )
      ```
 
-  2. Optimizer and Criterion
+    2. Optimizer and Criterion
 
      ```python
      # optimizer
