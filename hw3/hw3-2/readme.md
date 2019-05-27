@@ -234,3 +234,14 @@ Given a dataset with different hair and eyes color, we want to learn a generator
 2. Big color map
 
    <img src='assets/3-5-a-2.png'>
+
+## 5. Mix the notion of wgan
+
+I try to mix the concept of WGAN and CGAN. I do the following revision based on WGAN.
+1. remove ``sigmoid`` in the last layer.
+2. remove ``log`` in the loss function.
+3. weight clipping
+4. use rmsprop
+But the result turns out weird.(QQ)
+
+<img src="assets/3-5-1.png" width="500px">
