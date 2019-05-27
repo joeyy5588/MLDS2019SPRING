@@ -225,7 +225,7 @@ Given a dataset with different hair and eyes color, we want to learn a generator
 
    <img src='assets/3-4-4.png' width='500px'>
 
-### Advance
+### Advance(Use color embed)
 
 1. Given arbitrary hair and eye colors
 
