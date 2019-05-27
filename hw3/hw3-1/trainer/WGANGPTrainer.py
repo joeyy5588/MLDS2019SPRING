@@ -23,8 +23,8 @@ class WGANGPTrainer:
         self.dis = dis
         self.gen_iter = 1
         self.dis_iter = 1
-        self.gen_optimizer = torch.optim.Adam(self.gen.parameters(), lr = 0.0001, betas=(0.5, 0.9))
-        self.dis_optimizer = torch.optim.Adam(self.dis.parameters(), lr = 0.0001, betas=(0.5, 0.9))
+        self.gen_optimizer = torch.optim.RMSprop(self.gen.parameters(), lr = 0.00005)
+        self.dis_optimizer = torch.optim.RMSprop(self.dis.parameters(), lr = 0.00005)
         self.fixed_noise = torch.randn(25, self.noise_dim, 1, 1, device = self.device)
         self.criterion = nn.BCELoss()
         self.real_label = 1
