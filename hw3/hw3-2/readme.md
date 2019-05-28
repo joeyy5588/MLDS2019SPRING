@@ -158,9 +158,9 @@ Given a dataset with different hair and eyes color, we want to learn a generator
 
 
 
-   | Model   | ACGAN                            | CGAN                            |
-   | ------- | -------------------------------- | ------------------------------- |
-   | Process | <img src='assets/3-1-acgan.gif'> | <img src='assets/3-1-cgan.gif'> |
+| Model   | ACGAN                            | CGAN                            |
+| ------- | -------------------------------- | ------------------------------- |
+| Process | <img src='assets/3-1-acgan.gif'> | <img src='assets/3-1-cgan.gif'> |
 
    ACGAN is more easily to mode collapse, and its ability to learn accurate color is worse than CGAN.
 
@@ -234,6 +234,11 @@ Given a dataset with different hair and eyes color, we want to learn a generator
 2. Big color map
 
    <img src='assets/3-5-a-2.png'>
+
+3. Bigger color map
+
+   <img src='assets/3-5-2.png'>
+
 
 ## 5. Mix the notion of wgan
 

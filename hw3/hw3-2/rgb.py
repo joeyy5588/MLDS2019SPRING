@@ -55,31 +55,41 @@ if __name__ == '__main__':
     
     stage = np.array([[0, 0, +1], [-1, 0 ,0], [0, +1, 0], [0, 0, -1], [+1, 0, 0], [0, -1, 0]])
     n_row = 15
-    for x in np.arange(0, 1 + 0.1, 0.1):
-        curr = (1 - x) * red + x * white
-        # print(curr)
-        rgb_range = np.ceil(np.max(curr[0:3]) - np.min(curr[0:3]))
-        sample_rate = rgb_range * len(stage) // n_row
-        # print(curr)
-        # print(rgb_range * len(stage))
-        # input()
-        # print(sample_rate)
-        count = 0
-        for s in range(len(stage)):
-            for i in range(int(rgb_range)):
-                count += 1
-                condition = torch.from_numpy(curr).type(torch.float).to(device).repeat(1, 1) / 255
-                # generate
-                if count % sample_rate == 0:
-                    with torch.no_grad():
-                        # print(curr)
-                        image = G(fixed_noise, condition)
-                        image_container = torch.cat([image_container, image], dim = 0)
-                # update
-                curr[0:3] = curr[0:3] + stage[s]
-                # print(condition)
-                # input()
-        # print(count)
-        # print(image_container.shape[0])
+
+    for a in range(2):
+        mixed, l, r, d = None, None, None, None
+        if a == 0:
+            mixed = white
+            l, r, d = 1, -0.1, -0.1
+        else:
+            mixed = black
+            l, r, d = 0, 1 + 0.1, 0.1
+
+        for x in np.arange(l, r, d):
+            curr = (1 - x) * red + x * mixed
+            # print(curr) 
+            rgb_range = np.ceil(np.max(curr[0:3]) - np.min(curr[0:3]))
+            sample_rate = rgb_range * len(stage) // n_row
+            # print(curr)
+            # print(rgb_range * len(stage))
+            # input()
+            # print(sample_rate)
+            count = 0
+            for s in range(len(stage)):
+                for i in range(int(rgb_range)):
+                    count += 1
+                    condition = torch.from_numpy(curr).type(torch.float).to(device).repeat(1, 1) / 255
+                    # generate
+                    if count % sample_rate == 0:
+                        with torch.no_grad():
+                            # print(curr)
+                            image = G(fixed_noise, condition)
+                            image_container = torch.cat([image_container, image], dim = 0)
+                    # update
+                    curr[0:3] = curr[0:3] + stage[s]
+                    # print(condition)
+                    # input()
+            # print(count)
+            # print(image_container.shape[0])
 
     save_image(image_container, os.path.join(opt.save_dir, 'result.png'), nrow = n_row, normalize = True)
