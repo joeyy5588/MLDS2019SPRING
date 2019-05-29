@@ -32,7 +32,7 @@ class CGANTrainer:
             for j in range(10):
                 self.fixed_condition[i * 10 + j] = embenn.BCELoss()d(i, j, n_emb = n_emb).to(self.device)
 
-        self.criterion = 
+        self.criterion = nn.BCELoss()
         self.real_label = 1
         self.fake_label = 0
         self.begin_epoch = 0
