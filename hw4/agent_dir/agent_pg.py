@@ -24,14 +24,17 @@ def prepro(o,image_size=[80,80]):
     """
     y = 0.2126 * o[:, :, 0] + 0.7152 * o[:, :, 1] + 0.0722 * o[:, :, 2]
     y = y.astype(np.uint8)
-    resized = scipy.misc.imresize(y, image_size)
-    return np.expand_dims(resized.astype(np.float32),axis=2)
+    resized = scipy.misc.imresize(y, image_size).astype(np.float32)
+
+    return np.expand_dims(resized, axis=2)
 
 class Policy_Gradient(nn.Module):
     def __init__(self):
         super(Policy_Gradient, self).__init__()
         self.FC = nn.Sequential(
             nn.Linear(80 * 80 * 1, 256),
+            nn.ReLU(True),
+            nn.Linear(256, 256),
             nn.ReLU(True),
             nn.Linear(256, 1),
             nn.Sigmoid()
@@ -69,12 +72,14 @@ class Agent_PG(Agent):
         self.args = args
         self.model = Policy_Gradient()
         self.optimizer = optim.Adam(self.model.parameters(), lr = 1e-4)
+        # self.optimizer = optim.Adam(self.model.parameters(), lr = 1e-4)
         self.criterion = nn.functional.binary_cross_entropy
-        self.action_dict = {0: 2, 1: 5} # map 0 to UP, map 1 to DOWN
+        self.action_dict = {0: 2, 1: 3} # map 0 to UP, map 1 to DOWN
         self.log_list = []
         self.env.seed(1230)
         self.start_time = time.time()
-
+        self.start_episode = 0
+        self.test_last_observation = None
         # open save dir
         os.makedirs(args.save_dir, exist_ok=True)
         # set up logger
@@ -84,6 +89,8 @@ class Agent_PG(Agent):
         # set up device
         n_gpu = torch.cuda.device_count()
         self.device = torch.device('cuda:0' if n_gpu > 0 else 'cpu')
+        # load checkpoint
+        if args.check_path != None: self._load_checkpoint()
     def init_game_setting(self):
         """
 
@@ -94,8 +101,9 @@ class Agent_PG(Agent):
         ##################
         # YOUR CODE HERE #
         ##################
-        pass
-
+        
+        self.model.eval()
+        self.model.to(self.device)
 
     def train(self):
         
@@ -107,9 +115,11 @@ class Agent_PG(Agent):
         ##################
         env = self.env
         model = self.model
-        episode_n = 0
-        save_n = 1
-        # model.to(self.device)
+        episode_n = self.start_episode
+        save_n = int(np.sqrt(self.start_episode)) + 1
+        model.train()
+        model.to(self.device)
+
         while True:
             # =================
             # START EPISODE
@@ -117,15 +127,14 @@ class Agent_PG(Agent):
 
             # Initialize: first action
             observation = env.reset()
-            action = 0
-            observation, reward, done, info = env.step(action)
+
             # Declare many lists
-            state_list = []
+            prob_list = []
             reward_list = []
             action_list = []
             # Store last observation so that we can compute delta_obs
             last_observation = observation
-            
+            action = env.get_random_action()
             # ==================
             # PLAY UNTIL DIE
             # ==================
@@ -134,70 +143,70 @@ class Agent_PG(Agent):
             total_round = 0
             while done != True:
                 observation, reward, done, info = env.step(self.action_dict[action]) # map 0 to UP(2), map 1 to DOWN(5)
-
-                delta_observation = observation - last_observation
-                delta_observation = prepro(delta_observation)
-                delta_observation = torch.from_numpy(delta_observation).type(torch.float).unsqueeze(0)
-                
+                delta_observation = prepro(observation) - prepro(last_observation)
+                delta_observation = torch.from_numpy(delta_observation).type(torch.float).unsqueeze(0).to(self.device)
                 last_observation = observation
                 # prediction
-                pred = model(delta_observation)
-                # choose most possible action
-                action = 1 if pred.item() > 0.5 else 0
+                down_prob = model(delta_observation)
+                # sample an action
+                action = 1 if np.random.uniform() < down_prob.item() else 0
                 # push data into list
-                state_list.append(delta_observation)
+                prob_list.append(down_prob)
                 reward_list.append(reward)
                 action_list.append(action)
                 total_round += 1
-
-            # feed minibatch of actions to the model
-            self.model.train()
-            self.optimizer.zero_grad()
-
-            # discount factor
             total_rewards = sum(reward_list)
-            curr = 0
-            for i in reversed(range(len(reward_list))):
-                if reward_list[i] != 0:
-                    curr = reward_list[i]
-                curr = curr * 0.999
-                reward_list[i] = curr
 
-            # concat lists
-            states = torch.cat((state_list), dim = 0)# .to(self.device)
-            actions, rewards = torch.tensor(action_list).type(torch.float), torch.tensor(reward_list).type(torch.float)
+            self.optimizer.zero_grad()
+            # discount factor
+            discount_reward = self._discount_reward(reward_list)
+            probs = torch.cat((prob_list), dim = 0).to(self.device)
+            actions, rewards = torch.tensor(action_list).type(torch.float).to(self.device), torch.tensor(discount_reward).type(torch.float).to(self.device)
 
-            # normalize reward
-            rewards = (rewards - rewards.mean()) / rewards.std()
-            pred = model(states)
-
-            loss = self.criterion(pred.squeeze(1), actions, weight = rewards)
+            loss = self.criterion(probs.squeeze(1), actions, weight = rewards)
             loss.backward()
             self.optimizer.step()
             
-            self.logger.info('episode: %d total_rewards: %.2f total_round: %d loss: %.2f' % (episode_n, total_rewards, total_round, loss))
+            self.logger.info('episode: %d total_rewards: %.2f total_round: %d loss: %f' % (episode_n, total_rewards, total_round, loss.item()))
 
             log = {
                 'episode': episode_n,
-                'loss': loss,
+                'loss': loss.item(),
                 'total_round': total_round,
                 'total_rewards': total_rewards
             }
 
             self.log_list.append(log)
+ 
             if episode_n % (save_n ** 2) == 0:
                 save_n += 1
                 checkpoint = {
                     'log': self.log_list,
                     'state_dict': self.model.state_dict()
                 }
-                torch.save(log, os.path.join(self.args.save_dir, 'checkpoint_episode{}.pth.tar'.format(episode_n)))
+                torch.save(checkpoint, os.path.join(self.args.save_dir, 'checkpoint_episode{}.pth.tar'.format(episode_n)))
                 self.logger.info('save checkpoint_episode{}.pth.tar!'.format(episode_n))
 
                 elapsed_time = time.time() - self.start_time
-                self.logger.info('consume', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
+                self.logger.info('consume {}'.format(time.strftime("%H:%M:%S", time.gmtime(elapsed_time))))
             episode_n += 1
 
+    def _load_checkpoint(self):
+        checkpoint = torch.load(self.args.check_path)
+        self.model.load_state_dict(checkpoint['state_dict'])
+        self.log_list = checkpoint['log']
+        self.start_episode = checkpoint['log'][-1]['episode'] + 1
+    def _discount_reward(self, r):
+        dr = np.zeros_like(r)
+        curr = 0
+        for i in reversed(range(len(r))):
+            if r[i] != 0:
+                curr = r[i]
+            else:
+                curr = curr * 0.99
+            dr[i] = curr
+        dr = (dr - np.mean(dr)) / np.std(dr)
+        return dr
     def make_action(self, observation, test=True):
         """
         Return predicted action of your agent
@@ -213,5 +222,15 @@ class Agent_PG(Agent):
         ##################
         # YOUR CODE HERE #
         ##################
-        return self.env.get_random_action()
+        delta_observation = prepro(observation) - prepro(self.test_last_observation) if self.test_last_observation is not None else None
+        self.test_last_observation = observation
+        if delta_observation is None:
+            return 0
+        # prediction
+        delta_observation = torch.from_numpy(delta_observation).type(torch.float).unsqueeze(0).to(self.device)
+        down_prob = self.model(delta_observation)
+        # sample an action
+        action = 1 if np.random.uniform() < down_prob.item() else 0
+        return self.action_dict[action]
+
 

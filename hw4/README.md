@@ -1,22 +1,24 @@
 # MLDS HW4
-Please don't revise test.py, environment.py, agent_dir/agent.py
 
-## Installation
-Type the following command to install OpenAI Gym Atari environment.
+## HW4-1
+### 0. Demo
+<img src="assets/4-1-demo.gif">
 
-`$ pip3 install opencv-python gym gym[atari]`
+### 1. Model
+```python
+nn.Linear(80 * 80 * 1, 256),
+nn.ReLU(True),
+nn.Linear(256, 256),
+nn.ReLU(True),
+nn.Linear(256, 1),
+nn.Sigmoid()
+```
+### 2. Plot
+<img src="assets/4-1-plot.png">
 
-Please refer to [OpenAI's page](https://github.com/openai/gym) if you have any problem while installing.
+### 3. Inference
 
-## How to run :
-training policy gradient:
-* `$ python3 main.py --train_pg`
-
-testing policy gradient:
-* `$ python3 test.py --test_pg`
-
-training DQN:
-* `$ python3 main.py --train_dqn`
-
-testing DQN:
-* `$ python3 test.py --test_dqn`
+```
+Run 30 episodes
+Mean: 8.133333333333333
+```
