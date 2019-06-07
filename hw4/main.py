@@ -35,7 +35,7 @@ def run(args):
 
     if args.train_dqn:
         env_name = args.env_name or 'BreakoutNoFrameskip-v4'
-        env = Environment(env_name, args, atari_wrapper=True)
+        env = Environment(env_name, args, atari_wrapper=True, test=False, scale=False)
         from agent_dir.agent_dqn import Agent_DQN
         agent = Agent_DQN(env, args)
         agent.train()
@@ -47,7 +47,7 @@ def run(args):
         test(agent, env)
 
     if args.test_dqn:
-        env = Environment('BreakoutNoFrameskip-v4', args, atari_wrapper=True, test=True)
+        env = Environment('BreakoutNoFrameskip-v4', args, atari_wrapper=True, test=True, scale=False)
         from agent_dir.agent_dqn import Agent_DQN
         agent = Agent_DQN(env, args)
         test(agent, env, total_episodes=100)

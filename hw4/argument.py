@@ -9,4 +9,5 @@ def add_arguments(parser):
     '''
     parser.add_argument('--save_dir', type=str, default='saved/', help='the location to store data')
     parser.add_argument('--check_path', type=str, default=None, help='the path to load checkpoint')
+    parser.add_argument('--duel', action='store_true', help='implement duel dqn')
     return parser
