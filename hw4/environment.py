@@ -78,3 +78,11 @@ class Environment(object):
 
     def get_random_action(self):
         return self.action_space.sample()
+
+def make_env(env_name, clip_rewards, scale):
+    def _thunk():
+        env = make_wrap_atari(env_name, clip_rewards, scale)
+        return env
+
+    return _thunk
+
